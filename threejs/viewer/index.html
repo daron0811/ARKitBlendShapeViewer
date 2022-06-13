@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-language" content="en-EN" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>WebAR.rocks.face basic debug view</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <script src="../libs/three/v131/three.js"></script>
+    <script src="../libs/three/v131/three.min.js"></script>
+    <script src="../libs/three/v131/GLTFLoader.js"></script>
+
+    <script src="../libs/dat.gui/stats.min.js"></script>
+
+    <!-- INCLUDE WebAR.rocks.face MAIN SCRIPT -->
+    <script src="../dist/WebARRocksFace.js"></script>
+
+    <!-- INCLUDE MAIN HELPER -->
+    <script src="../helpers/WebARRocksFaceThreeHelper.js"></script>
+
+    <!-- INCLUDE RESIZER HELPER -->
+    <script src="../helpers/WebARRocksResizer.js"></script>
+
+    <!-- INCLUDE DEMO SCRIPT -->
+    <script src="./main.js"></script>
+
+
+    
+    <style type="text/css">
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #WebARRocksFaceCanvas, #threeCanvas {
+        position: fixed;
+        width  : 50vw;
+        height : 70vh;
+        top: 0;
+        left: 0;
+        /* mirror the canvas: */
+        transform: rotateY(180deg);
+      }
+      #WebARRocksFaceCanvas {
+        z-index: 0;
+      }
+      #threeCanvas {
+        z-index: 1;
+      }
+    </style>
+
+
+  </head>
+  <body onload="main()">
+    <!-- canvas where the earring will be displayed: -->
+    <canvas width="600" height="600" id='threeCanvas'></canvas>
+
+    <!-- canvas where the video will be displayed: -->
+    <canvas width="600" height="600" id='WebARRocksFaceCanvas'></canvas>
+  </body>
+</html>
+ 
