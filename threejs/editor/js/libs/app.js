@@ -2,7 +2,7 @@ var APP = {
 
 	Player: function () {
 
-		var renderer = new THREE.WebGLRenderer( { antialias: true } );
+		var renderer = new THREE.WebGLRenderer( { antialias: true , alpha: true } );
 		renderer.setPixelRatio( window.devicePixelRatio ); // TODO: Use player.setPixelRatio()
 		renderer.outputEncoding = THREE.sRGBEncoding;
 
