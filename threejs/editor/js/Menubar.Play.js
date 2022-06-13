@@ -18,7 +18,7 @@ function MenubarPlay( editor ) {
 		if ( isPlaying === false ) {
 
 			isPlaying = true;
-			title.setTextContent( strings.getKey( 'menubar/play/stop' ) );
+			title.setTextContent(strings.getKey( 'menubar/play/stop' ) );
 			signals.startPlayer.dispatch();
 
 		} else {

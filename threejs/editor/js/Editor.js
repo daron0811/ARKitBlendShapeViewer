@@ -6,10 +6,15 @@ import { History as _History } from './History.js';
 import { Strings } from './Strings.js';
 import { Storage as _Storage } from './Storage.js';
 
-var _DEFAULT_CAMERA = new THREE.PerspectiveCamera( 50, 1, 0.01, 1000 );
+var _DEFAULT_CAMERA = new THREE.PerspectiveCamera( 50, 1, 0.01, 10000 );
 _DEFAULT_CAMERA.name = 'Camera';
 _DEFAULT_CAMERA.position.set( 0, 5, 10 );
 _DEFAULT_CAMERA.lookAt( new THREE.Vector3() );
+
+var _GIFT_CAMERA = new THREE.PerspectiveCamera( 75, 1, 0.1, 1000 );
+_GIFT_CAMERA.name = 'Gift Preview';
+_GIFT_CAMERA.position.set( 0, 0, 2);
+_GIFT_CAMERA.lookAt( new THREE.Vector3() );
 
 function Editor() {
 
@@ -126,7 +131,7 @@ function Editor() {
 	this.viewportCamera = this.camera;
 
 	this.addCamera( this.camera );
-
+	this.addCamera( _GIFT_CAMERA );
 }
 
 Editor.prototype = {
@@ -724,15 +729,15 @@ Editor.prototype = {
 		//
 
 		return {
-			metadata:{	version:'1.0.0',
-						type : "ARScene"},
-			project: {
-				shadows: this.config.getKey( 'project/renderer/shadows' ),
-				shadowType: this.config.getKey( 'project/renderer/shadowType' ),
-				physicallyCorrectLights: this.config.getKey( 'project/renderer/physicallyCorrectLights' ),
-				toneMapping: this.config.getKey( 'project/renderer/toneMapping' ),
-				toneMappingExposure: this.config.getKey( 'project/renderer/toneMappingExposure' )
-			},
+			metadata:{	version:'1.0.1',
+						type : "ARScene" },
+			// project: {
+			// 	shadows: this.config.getKey( 'project/renderer/shadows' ),
+			// 	shadowType: this.config.getKey( 'project/renderer/shadowType' ),
+			// 	physicallyCorrectLights: this.config.getKey( 'project/renderer/physicallyCorrectLights' ),
+			// 	toneMapping: this.config.getKey( 'project/renderer/toneMapping' ),
+			// 	toneMappingExposure: this.config.getKey( 'project/renderer/toneMappingExposure' )
+			// },
 			scene: this.scene.toJSON(),
 			scripts: this.scripts
 		};

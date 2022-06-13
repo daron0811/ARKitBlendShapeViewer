@@ -1,0 +1,92 @@
+class particleSystem {
+constructor(scene, setting) {
+this.scene = scene;
+this.object = setting.object;
+this.looping = setting.looping;
+this.liftTime = setting.liftTime;
+this.speed = setting.speed;
+this.maxCount = setting.maxCount;
+this.particles = [];
+this.timerCounter = 0;
+this.isYDown = setting.isYDown;
+this.velocity = setting.velocity
+this.rotation = setting.rotation;
+this.createObject();
+}
+createObject() {
+for (var i = 0; i < this.maxCount; i++) {
+var particle = this.object.clone();
+particle.userData.velocity = new THREE.Vector3(this.randomValue(this.velocity.x_min, this.velocity.x_max), this.randomValue(this.velocity.y_min, this.velocity.y_max), this.randomValue(this.velocity.z_min, this.velocity.z_max));
+particle.userData.RV = new THREE.Vector3(this.randomValue(this.rotation.x_min, this.rotation.x_max), this.randomValue(this.rotation.y_min, this.rotation.y_max), this.randomValue(this.rotation.z_min, this.rotation.z_max));
+particle.visible = true;
+this.scene.add(particle);
+this.particles.push(particle);
+}
+}
+render(dt) {
+this.timerCounter += dt;
+if (this.timerCounter >= this.liftTime) {
+for (var i = 0; i < this.particles.length; i++) {
+this.scene.remove(this.particles[i]);
+}
+if (this.isLoop == false) {
+return;
+}
+this.createObject();
+this.timerCounter = 0;
+}
+else {
+for (var i = 0; i < this.particles.length; i++) {
+var particle = this.particles[i];
+var velocity = this.particles[i].userData.velocity;
+var rv = this.particles[i].userData.RV;
+if (this.isYDown) {
+velocity.y -= 0.00098 * this.speed;
+}
+else {
+velocity.y += 0.00098 * this.speed;
+}
+particle.position.add(velocity);
+particle.rotation.x += rv.x;
+particle.rotation.y += rv.y;
+particle.rotation.z += rv.z;
+this.particles[i].userData.velocity.x = 0;
+this.particles[i].userData.velocity.z = 0;
+}
+}
+}
+randomValue(min, max) {
+return Math.random() * (max - min) + min;
+}
+}
+
+var ps = new particleSystem(scene, {
+object: this,
+duration: 5,
+looping: true,
+liftTime: 12,
+speed: 0.1,
+maxCount: 4,
+isYDown: true,
+velocity: {
+x_min: -0.25,
+x_max: 0,
+y_min: 0,
+y_max: 0.021,
+z_min: 0,
+z_max: 0.1,
+},
+rotation: {
+x_min: -0.1,
+x_max: 0.2,
+y_min: -0.1,
+y_max: 0.2,
+z_min: -0.1,
+z_max: 0.15,
+}
+});
+
+
+function update(event) {
+ps.render(event.delta / 1000)
+}

@@ -1,6 +1,6 @@
 import * as THREE from '../../build/three.module.js';
 
-import { UIPanel, UIRow, UIInput, UIButton, UIColor, UICheckbox, UIInteger, UITextArea, UIText, UINumber } from './libs/ui.js';
+import { UIPanel, UIRow, UIInput, UIButton, UIColor, UICheckbox, UIInteger, UITextArea, UIText, UINumber,UISelect } from './libs/ui.js';
 import { UIBoolean } from './libs/ui.three.js';
 
 import { SetUuidCommand } from './commands/SetUuidCommand.js';
@@ -20,49 +20,6 @@ function SidebarObject( editor ) {
 	container.setBorderTop( '0' );
 	container.setPaddingTop( '20px' );
 	container.setDisplay( 'none' );
-
-	// Actions
-
-	/*
-	var objectActions = new UI.Select().setPosition( 'absolute' ).setRight( '8px' ).setFontSize( '11px' );
-	objectActions.setOptions( {
-
-		'Actions': 'Actions',
-		'Reset Position': 'Reset Position',
-		'Reset Rotation': 'Reset Rotation',
-		'Reset Scale': 'Reset Scale'
-
-	} );
-	objectActions.onClick( function ( event ) {
-
-		event.stopPropagation(); // Avoid panel collapsing
-
-	} );
-	objectActions.onChange( function ( event ) {
-
-		var object = editor.selected;
-
-		switch ( this.getValue() ) {
-
-			case 'Reset Position':
-				editor.execute( new SetPositionCommand( editor, object, new Vector3( 0, 0, 0 ) ) );
-				break;
-
-			case 'Reset Rotation':
-				editor.execute( new SetRotationCommand( editor, object, new Euler( 0, 0, 0 ) ) );
-				break;
-
-			case 'Reset Scale':
-				editor.execute( new SetScaleCommand( editor, object, new Vector3( 1, 1, 1 ) ) );
-				break;
-
-		}
-
-		this.setValue( 'Actions' );
-
-	} );
-	container.addStatic( objectActions );
-	*/
 
 	// type
 
@@ -359,6 +316,69 @@ function SidebarObject( editor ) {
 
 	container.add( objectRenderOrderRow );
 
+
+	// Actions
+
+	var objectActionsRow = new UIRow();
+
+	var objectActions = new UISelect().setOptions( {
+		'Actions': 'Actions',
+		'Reset Position': 'Reset Position',
+		'Reset Rotation': 'Reset Rotation',
+		'Reset Scale': 'Reset Scale'
+	} ).setWidth( '150px' ).setFontSize( '12px' );
+
+	objectActions.onClick( function ( event ) {
+
+		event.stopPropagation(); // Avoid panel collapsing
+
+	} );
+	objectActions.onChange( function ( event ) {
+
+		var object = editor.selected;
+
+		switch ( this.getValue() ) {
+
+			case 'Reset Position':
+				editor.execute( new SetPositionCommand( editor, object, new THREE.Vector3( 0, 0, 0 ) ) );
+				break;
+
+			case 'Reset Rotation':
+				editor.execute( new SetRotationCommand( editor, object, new THREE.Euler( 0, 0, 0 ) ) );
+				break;
+
+			case 'Reset Scale':
+				editor.execute( new SetScaleCommand( editor, object, new THREE.Vector3( 1, 1, 1 ) ) );
+				break;
+
+		}
+
+		this.setValue( 'Actions' );
+
+	} );
+	objectActionsRow.add( new UIText( 'Action' ).setWidth( '90px' ) );
+	objectActionsRow.add(objectActions);
+	container.add( objectActionsRow );
+
+	// occluder
+
+	var objectOccluderRow = new UIRow();
+	var objectOccluder = new UICheckbox().onChange( update );
+
+	objectOccluderRow.add( new UIText( 'Occluder' ).setWidth( '90px' ) );
+	objectOccluderRow.add( objectOccluder );
+
+	container.add( objectOccluderRow );
+
+	// isGift
+	var objectARGiftRow = new UIRow();
+	var objectARGift = new UICheckbox().onChange( update );
+
+	objectARGiftRow.add( new UIText( 'AR Gift' ).setWidth( '90px' ) );
+	objectARGiftRow.add( objectARGift );
+
+	container.add( objectARGiftRow );
+
 	// user data
 
 	var objectUserDataRow = new UIRow();
@@ -568,13 +588,69 @@ function SidebarObject( editor ) {
 
 			}
 
+
+			//Set Occluder
+			
+			if(object.userData.isOccluder == null)
+			{
+				console.log('Add new');
+				if(objectOccluder.getValue())
+				{
+					object.userData['isOccluder'] = objectOccluder.getValue();
+					var userData = object.userData;
+					editor.execute( new SetValueCommand( editor, object, 'userData', userData ) );
+				}
+			}
+			else
+			{
+				if(object.userData.isOccluder == objectOccluder.getValue())
+				{
+					console.log('Occulder is Same');
+				}
+				else
+				{
+					object.userData.isOccluder = objectOccluder.getValue(); // 先寫入資料
+
+					var userData = object.userData;
+					editor.execute( new SetValueCommand( editor, object, 'userData', userData ) );
+				}
+
+			}
+
+			//Set Gift
+
+			if(object.userData.ARGift == null)
+			{
+				if(objectARGift.getValue())
+				{
+					object.userData['ARGift'] = objectARGift.getValue();
+					var userData = object.userData;
+					editor.execute( new SetValueCommand( editor, object, 'userData', userData ) );
+				}
+			}
+			else
+			{
+				if(object.userData.ARGift == objectARGift.getValue())
+				{
+					console.log('ARGift is Same');
+				}
+				else
+				{
+					object.userData.ARGift = objectARGift.getValue(); // 先寫入資料
+
+					var userData = object.userData;
+					editor.execute( new SetValueCommand( editor, object, 'userData', userData ) );
+				}
+
+			}
+
+
+
 			try {
 
 				var userData = JSON.parse( objectUserData.getValue() );
 				if ( JSON.stringify( object.userData ) != JSON.stringify( userData ) ) {
-
 					editor.execute( new SetValueCommand( editor, object, 'userData', userData ) );
-
 				}
 
 			} catch ( exception ) {
@@ -823,6 +899,22 @@ function SidebarObject( editor ) {
 		objectVisible.setValue( object.visible );
 		objectFrustumCulled.setValue( object.frustumCulled );
 		objectRenderOrder.setValue( object.renderOrder );
+
+		
+		if(object.userData == undefined)
+		{
+			objectOccluder.setValue( false );
+		}else
+		{
+			if(object.userData.isOccluder == null)
+			{
+				objectOccluder.setValue( false );
+			}
+			else 
+			{
+				objectOccluder.setValue( object.userData.isOccluder );
+			}
+		}
 
 		try {
 

@@ -1,0 +1,11 @@
+function update( event ) {
+	if (typeof player.isDetected  !== 'undefined')
+	{
+		if(player.isDetected())
+		{
+			//value -1~1
+			console.log('faceRotation:',player.faceRotation());
+			console.log('facePositon:',player.facePosition()); // 2D position
+		}
+	}
+}

@@ -26,7 +26,7 @@ function ViewportInfo( editor ) {
 	container.add( trianglesText, new UIBreak() );
 	container.add( new UIText( strings.getKey( 'viewport/info/frametime' ) ).setTextTransform( 'lowercase' ) );
 	container.add( frametimeText, new UIBreak() );
-	container.add( new UIText( 'Version : 1.0.0' ).setTextTransform( 'lowercase' ) );
+	container.add( new UIText( 'Version : 1.0.1' ).setTextTransform( 'lowercase' ) );
 
 	signals.objectAdded.add( update );
 	signals.objectRemoved.add( update );

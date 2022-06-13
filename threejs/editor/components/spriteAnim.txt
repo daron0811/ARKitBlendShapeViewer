@@ -1,0 +1,65 @@
+var tileX = 4; //X格數
+var tileY = 4;	//Y格數
+var tileNum = 16;	//要播到第幾格
+var tileDuration = 1; //播放速率
+
+var spriteAnim;
+var spriteMap;
+
+var isCanPlay = false;
+
+function init()
+{
+	if(this.material==null)
+	{
+		console.log('material is null');
+		isCanPlay = false;
+		return;
+	}
+	if(this.material.map==null)
+	{
+		console.log('material map is null');
+		isCanPlay = false;
+		return;
+	}
+	isCanPlay = true;
+	spriteMap = this.material.map;
+	spriteAnim = new TextureAnimator( spriteMap, tileX, tileY, tileNum, 55 ); // texture, #horiz, #vert, #total, duration.
+}
+
+function update(event)
+{
+	if(isCanPlay)
+		spriteAnim.update(event.delta*tileDuration);
+}
+
+function TextureAnimator(texture, tilesHoriz, tilesVert, numTiles, tileDispDuration) 
+{	
+	this.tilesHorizontal = tilesHoriz;
+	this.tilesVertical = tilesVert;
+	this.numberOfTiles = numTiles;
+	texture.wrapS = texture.wrapT = THREE.RepeatWrapping; 
+	texture.repeat.set( 1 / this.tilesHorizontal, 1 / this.tilesVertical );
+
+	this.tileDisplayDuration = tileDispDuration;
+
+	this.currentDisplayTime = 0;
+
+	this.currentTile = 0;
+		
+	this.update = function( milliSec )
+	{
+		this.currentDisplayTime += milliSec;
+		while (this.currentDisplayTime > this.tileDisplayDuration)
+		{
+			this.currentDisplayTime -= this.tileDisplayDuration;
+			this.currentTile++;
+			if (this.currentTile == this.numberOfTiles)
+				this.currentTile = 0;
+			var currentColumn = this.currentTile % this.tilesHorizontal;
+			texture.offset.x = currentColumn / this.tilesHorizontal;
+			var currentRow = Math.floor( this.currentTile / this.tilesHorizontal );
+			texture.offset.y = currentRow / this.tilesVertical;
+		}
+	};
+}		

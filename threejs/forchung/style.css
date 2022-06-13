@@ -1,0 +1,213 @@
+#camera-view {
+    position: relative;
+    padding: 0;
+}
+
+.camera-canvas {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    image-rendering: pixelated;
+  }
+
+  .merge-view{
+      display: none;
+  }
+
+.camera-canvas.show-view {
+transform: scaleX(-1);
+transition: transform 1s ease-out 0.5s;
+}
+
+.camera-canvas.show-view.face {
+transform: scaleX(1);
+}
+
+@keyframes vogue-animation-frame {
+    0% {background-position: 0, 0}
+    100% {background-position: -7680px, 0}
+  }
+  
+  .vogue-loading {
+    text-align: center;
+    background-color: rgba(0,0,0,0);
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999;
+    background-size: cover;
+    background-image: url("images/bg.png");
+  }
+
+  .vogue-loading.none {
+      display: none;
+  }
+  
+  .vogue-loading-image {
+    position: relative;
+    margin-right: auto;
+    margin-left: auto;
+    width: 287px;
+    height: 210px;
+    top: 60px;
+    animation-duration: 1000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: steps(3);
+    background-image: url("images/bell_ani.png");
+    transform: translate(8%, 42%) scale(0.9);
+  }
+  
+  .vogue-loading-image.play {
+    animation-name: vogue-animation-frame;
+  }
+  
+  .vogue-title {
+    width: 60%;
+    position: relative;
+    top: 22%;
+    display: block;
+    margin-right: auto;
+    margin-left: auto;
+  }
+  
+  .vogue-power-logo{
+    position: relative;
+    width: 55%;
+    top: 100px;
+  }
+  
+  .vogue-loading-light {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: 999999;
+    background-size: cover;
+    background-image: url("https://funk-ar.com/event/loading_720_light.png");
+  }
+  
+  .vogue-logo {
+    position: fixed;
+    top: 2rem;
+    left: 2rem;
+    width: 60px;
+  }
+
+  .take-photo {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    text-align: center;
+    z-index: 10;
+  }
+  .btn-take-photo {
+    width: 15%;
+    margin-bottom: 1rem;
+  }
+
+  .switch-camera {
+    position: absolute;
+    bottom: 15px;
+    right: 50px;
+    left: 0;
+    text-align: right;
+  }
+
+  .btn-switch-camera {
+    position: absolute;
+    width: 10%;
+    right: 10%;
+    bottom: 33%;
+  }
+
+  .image-preview {
+    background-color: rgba(0, 0, 0, 0.5);
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 99999;
+    text-align: center;
+  }
+
+  .image-photo {
+    transform: scale(0.8) rotateZ(6deg) translate(-14px, 0);
+    padding: 10px;
+    background-color: white;
+  }
+
+  .btn-close {
+    position: absolute;
+    top: 6%;
+    right: 2%;
+    width: 7%;
+    z-index: 100;
+  }
+
+  .image-vogue-photo {
+    transform: scale(0.8) rotateZ(6deg) translate(-14px, 0);
+    padding: 10px;
+    background-color: white;
+    width: 100%;
+  }
+  
+  .image-preview.hide {
+    display: none;
+  }
+  
+  .message-box{
+    position: fixed;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    text-align: center;
+  }
+
+  .message-box-image{
+    width: 75%;
+  }
+  .message {
+    position: absolute;
+    top: 20%;
+    width: 75%;
+    left: 50%;
+    transform: translate(-50%);
+    font-size: larger;
+  }
+  .btn-know {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+
+  .btn-know img {
+    width: 30%;
+    margin-bottom: 5%;
+  }
+  
+  .message-box.hide {
+    display: none;
+  }
+
+  .show-face {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+  }
+  .show-face img {
+    width: 42%;
+    position: absolute;
+    top: 12%;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }

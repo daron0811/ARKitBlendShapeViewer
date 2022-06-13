@@ -4,6 +4,8 @@ import { zipSync, strToU8 } from '../../examples/jsm/libs/fflate.module.js';
 
 import { UIPanel, UIRow, UIHorizontalRule } from './libs/ui.js';
 
+import { AddObjectCommand } from './commands/AddObjectCommand.js';
+
 function MenubarFile( editor ) {
 
 	var config = editor.config;
@@ -32,6 +34,27 @@ function MenubarFile( editor ) {
 
 			editor.clear();
 
+
+			var color = 0x999999;
+
+			var light = new THREE.AmbientLight( color );
+			light.name = 'AmbientLight';
+
+			editor.execute( new AddObjectCommand( editor, light ) );
+
+
+			var color2 = 0xffffff;
+			var intensity = 1;
+
+			var light2 = new THREE.DirectionalLight( color2, intensity );
+			light2.name = 'DirectionalLight';
+			light2.target.name = 'DirectionalLight Target';
+
+			light2.position.set( 300	, 250, 300 );
+
+			editor.execute( new AddObjectCommand( editor, light2 ) );
+
+			editor.deselect();
 		}
 
 	} );
@@ -64,6 +87,64 @@ function MenubarFile( editor ) {
 	option.onClick( function () {
 
 		fileInput.click();
+
+	} );
+	options.add( option );
+
+	//
+
+	options.add( new UIHorizontalRule() );
+
+	
+	// Export AR Scene
+
+	var option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( 'Export AR Scene' );
+	option.onClick( function () {
+
+		var output = editor.toJSONExport();
+
+		try {
+			output = JSON.stringify( output );
+			// output = output.replace( /[\n\t]+([\d\.e\-\[\]]+)/g, '$1' );
+
+		} catch ( e ) {
+
+			output = JSON.stringify( output );
+			// console.log(e);
+		}
+		
+		// console.log(output);
+
+		var FileName = editor.config.getKey( 'project/title' );
+		if(FileName=='')
+		{
+			FileName = 'ARScene'
+		}
+
+		saveString( output,FileName + '.json' );
+
+	} );
+	options.add( option );
+
+	//
+
+
+	// Export Png From Scene
+
+	var option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( 'Export PNG' );
+	option.onClick( function () {
+
+		var canvas = document.getElementById('PreviewDiv');
+		const image = canvas.toDataURL("image/png");
+
+		const a = document.createElement("a");
+		a.href = image.replace(/^data:image\/[^;]/, 'data:application/octet-stream');
+		a.download="image.png"
+		a.click();
 
 	} );
 	options.add( option );
@@ -174,40 +255,6 @@ function MenubarFile( editor ) {
 	options.add( option );
 
 	//
-
-	// Export AR Scene
-
-	var option = new UIRow();
-	option.setClass( 'option' );
-	option.setTextContent( 'Export AR Scene' );
-	option.onClick( function () {
-
-		var output = editor.toJSONExport();
-
-		try {
-
-			output = JSON.stringify( output, null, '\t' );
-			output = output.replace( /[\n\t]+([\d\.e\-\[\]]+)/g, '$1' );
-
-		} catch ( e ) {
-
-			output = JSON.stringify( output );
-
-		}
-		
-		var FileName = editor.config.getKey( 'project/title' );
-		if(FileName=='')
-		{
-			FileName = 'ARScene'
-		}
-
-		saveString( output,FileName + '.json' );
-
-	} );
-	options.add( option );
-
-	//
-
 	options.add( new UIHorizontalRule() );
 
 	// Export DAE

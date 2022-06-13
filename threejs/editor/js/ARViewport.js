@@ -1,5 +1,5 @@
 import { UIPanel } from './libs/ui.js';
-import { RocksView } from './libs/RocksView.js';
+import { RocksView } from './libs/rocksView.js';
 
 
 
@@ -11,8 +11,6 @@ function ARViewport( editor ) {
 	container.setId( 'player' );
 	container.setPosition( 'absolute' );
 	container.setDisplay( 'none' );
-
-	//
 
 	var player = new RocksView.Player();
 	container.dom.appendChild( player.dom );
@@ -27,7 +25,6 @@ function ARViewport( editor ) {
 
 		container.setDisplay( '' );
 
-		// console.log( JSON.stringify(editor));
 		player.load( editor.toJSON() );
 		player.setSize( container.dom.clientWidth, container.dom.clientHeight );
 		player.play();

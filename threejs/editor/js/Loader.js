@@ -666,7 +666,7 @@ function Loader( editor ) {
 			default:
 
 				console.error( 'Unsupported file format (' + extension + ').' );
-
+				window.alert('Unsupported file format (' + extension + ').');
 				break;
 
 		}
@@ -710,7 +710,7 @@ function Loader( editor ) {
 			case 'geometry':
 
 				console.error( 'Loader: "Geometry" is no longer supported.' );
-
+				window.alert('[Error] Loader: "Geometry" is no longer supported.');
 				break;
 
 			case 'object':
@@ -753,6 +753,7 @@ function Loader( editor ) {
 
 	async function handleZIP( contents ) {
 
+		var isload = false;
 		var zip = unzipSync( new Uint8Array( contents ) );
 
 		// Poly
@@ -797,7 +798,7 @@ function Loader( editor ) {
 			switch ( extension ) {
 
 				case 'fbx':
-
+					isload = true;
 					var { FBXLoader } = await import( '../../examples/jsm/loaders/FBXLoader.js' );
 
 					var loader = new FBXLoader( manager );
@@ -808,7 +809,7 @@ function Loader( editor ) {
 					break;
 
 				case 'glb':
-
+					isload = true;
 					var { DRACOLoader } = await import( '../../examples/jsm/loaders/DRACOLoader.js' );
 					var { GLTFLoader } = await import( '../../examples/jsm/loaders/GLTFLoader.js' );
 
@@ -830,7 +831,7 @@ function Loader( editor ) {
 					break;
 
 				case 'gltf':
-
+					isload = true;
 					var { DRACOLoader } = await import( '../../examples/jsm/loaders/DRACOLoader.js' );
 					var { GLTFLoader } = await import( '../../examples/jsm/loaders/GLTFLoader.js' );
 
@@ -849,9 +850,58 @@ function Loader( editor ) {
 					} );
 
 					break;
+				case 'json':
+					isload = true;
+					var contents = strFromU8( file );
 
+					// 2.0
+
+					if ( contents.indexOf( 'postMessage' ) !== - 1 ) {
+
+						var blob = new Blob( [ contents ], { type: 'text/javascript' } );
+						var url = URL.createObjectURL( blob );
+
+						var worker = new Worker( url );
+
+						worker.onmessage = function ( event ) {
+
+							event.data.metadata = { version: 2 };
+							handleJSON( event.data );
+
+						};
+
+						worker.postMessage( Date.now() );
+
+						return;
+
+					}
+
+					// >= 3.0
+
+					var data;
+
+					try {
+
+						data = JSON.parse( contents );
+
+					} catch ( error ) {
+
+						alert( error );
+						return;
+
+					}
+
+					handleJSON( data );
+
+				break;
 			}
 
+		}
+
+		if(!isload)
+		{
+			console.error('[Error] Loader: The .zip file does not contain any 3D model' );
+			window.alert('[Error] Loader: The .zip file does not contain any 3D model');
 		}
 
 	}
@@ -894,3 +944,4 @@ function Loader( editor ) {
 }
 
 export { Loader };
+3

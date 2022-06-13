@@ -2,7 +2,8 @@ var APP = {
 
 	Player: function () {
 
-		var renderer = new THREE.WebGLRenderer( { antialias: true , alpha: true } );
+		var renderer = new THREE.WebGLRenderer( { antialias: true, alpha: true, preserveDrawingBuffer: true } );
+		// var renderer = new THREE.WebGLRenderer( { antialias: true } );
 		renderer.setPixelRatio( window.devicePixelRatio ); // TODO: Use player.setPixelRatio()
 		renderer.outputEncoding = THREE.sRGBEncoding;
 
@@ -13,7 +14,9 @@ var APP = {
 
 		var events = {};
 
-		var dom = document.createElement( 'div' );
+		renderer.domElement.id = 'PreviewDiv';
+
+		var dom = document.createElement( 'Div' );
 		dom.appendChild( renderer.domElement );
 
 		this.dom = dom;
@@ -25,7 +28,7 @@ var APP = {
 
 		this.load = function ( json ) {
 
-			console.log(json);
+			//console.log(json);	
 
 			var project = json.project;
 
@@ -48,6 +51,7 @@ var APP = {
 				pointerdown: [],
 				pointerup: [],
 				pointermove: [],
+				dbclick:[],//新增雙擊
 				update: []
 			};
 
@@ -215,9 +219,8 @@ var APP = {
 			document.addEventListener( 'pointerdown', onPointerDown );
 			document.addEventListener( 'pointerup', onPointerUp );
 			document.addEventListener( 'pointermove', onPointerMove );
-
+			document.addEventListener('dblclick',onDBlclick);
 			dispatch( events.start, arguments );
-
 			renderer.setAnimationLoop( animate );
 
 		};
@@ -231,6 +234,8 @@ var APP = {
 			document.removeEventListener( 'pointerdown', onPointerDown );
 			document.removeEventListener( 'pointerup', onPointerUp );
 			document.removeEventListener( 'pointermove', onPointerMove );
+			document.removeEventListener( 'dblclick',onDBlclick);
+			
 
 			dispatch( events.stop, arguments );
 
@@ -284,6 +289,12 @@ var APP = {
 		function onPointerMove( event ) {
 
 			dispatch( events.pointermove, event );
+
+		}
+
+		function onDBlclick( event ) {
+
+			dispatch( events.dbclick, event );
 
 		}
 

@@ -1,0 +1,26 @@
+function pointerdown(event)
+{
+	var raycaster = new THREE.Raycaster();
+	var mouse = getMousePosition(event);
+	raycaster.setFromCamera(mouse,camera);
+	const intersection = raycaster.intersectObject( scene,true );
+	if ( intersection.length > 0 ) {
+		console.log(intersection[ 0 ].object.name);
+	}
+    /*var points = [];//設置兩點來畫線
+	points.push(raycaster.ray.origin.clone());
+	points.push(raycaster.ray.origin.clone().add(raycaster.ray.direction.clone().setLength(10000)));
+	var rayLineGeometry = new THREE.BufferGeometry().setFromPoints( points );
+	var rayLineMaterial = new THREE.LineBasicMaterial({color: 0x00ff00});
+	var line = new THREE.Line(rayLineGeometry, rayLineMaterial);
+	rayLine = line;
+	scene.add(line); //加到Scene中*/
+}
+function getMousePosition(event)
+{
+	var pointX;
+	var pointY;
+	pointX = ( event.clientX / player.width ) * 2 - 1;
+	pointY = - ( event.clientY / player.height ) * 2 + 1;
+	return new THREE.Vector2(pointX,pointY);
+}

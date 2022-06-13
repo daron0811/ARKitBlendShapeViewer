@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-language" content="en-EN" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <meta http-equiv="cache-control" content="no-cache">
+    <meta http-equiv="pragma" content="no-cache">
+    <meta http-equiv="expires" content="0">
+
+    <meta name="description" content="FunkAR是世界首創WebAR擴增實境送禮平台，不論身在何處，滿滿心意都能面對面限時專送！建立專屬即時客製化AR卡片，保留不可取代的手作溫度，透過360度3D預覽，讓每個愛的時刻都更有趣。">
+    <meta name="keywords" content="AR, 擴增實境, 禮物, 互動, 卡片, 送禮, 客製化, 3D預覽, 手作卡片, AR濾鏡, AR效果, 有趣, WebAR">
+    <meta property="og:title" content="FunkAR｜即時客製AR卡片｜AR擴增實境送禮平台"/>
+    <meta property="og:site_name" content="FunkAR｜AR擴增實境送禮平台"/>
+    <meta property="og:description" content="FunkAR是世界首創AR擴增實境送禮平台，讓每個愛的時刻都更有趣，不論身在何處，滿滿心意都能面對面限時專送！"/>
+    <meta property="og:image" content="/storage/icon/FunkAR_share_bg.png"/>
+
+    <link rel="icon" sizes="192x192" href="/storage/icon/FunkAR Shortcut_icon_192x192_Android.png">
+    <link rel="icon" sizes="128x128" href="/storage/icon/FunkAR Shortcut_icon_128x128_Android.png">
+    <link rel="apple-touch-icon" href="/storage/icon/FunkAR Shortcut_icon 60x60_iPhone.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/storage/icon/FunkAR Shortcut_icon_76x76_iPad.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/storage/icon/FunkAR Shortcut_icon_120x120_iPhone.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/storage/icon/FunkAR Shortcut_icon_152x152_iPad.png" />
+
+    <title>VOUGE VIP</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <script src="./libs/three/v131/three.js"></script>
+    <script src="./libs/three/v131/three.min.js"></script>
+    <script src="./libs/three/v131/GLTFLoader.js"></script>
+
+    <script src="./libs/dat.gui/stats.min.js"></script>
+
+    <!-- INCLUDE WebAR.rocks.face MAIN SCRIPT -->
+    <script src="./dist/WebARRocksFace.js"></script>
+
+    <!-- INCLUDE MAIN HELPER -->
+    <script src="./helpers/WebARRocksFaceThreeHelperVOGUE.js"></script>
+
+    <!-- INCLUDE RESIZER HELPER -->
+    <script src="./helpers/WebARRocksResizer.js"></script>
+    <script src="./html2canvas.min.js"></script>
+    
+    <script>
+      window.fbAsyncInit = function() {
+        FB.init({
+          appId            : '808769719726417',
+          autoLogAppEvents : true,
+          xfbml            : true,
+          version          : 'v11.0'
+        });
+      };
+    </script>
+    <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js"></script>
+        
+
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-8V9XKXB9Z0"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-8V9XKXB9Z0');
+    </script>
+
+    <!-- INCLUDE DEMO SCRIPT -->
+    <script src="./main.js"></script>
+
+    <style type="text/css">
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+
+    </style>
+
+    <link href="./style.css" rel="stylesheet" type="text/css" >
+
+  </head>
+  <body>
+    <div class='vogue-loading'>
+      <div class="vogue-loading-light" ></div>
+      <img class="vogue-logo" src="https://funk-ar.com/event/loading_Taipei_logo.svg" alt=""/>
+      <img class="vogue-title" src="https://funk-ar.com/event/loading_VOGUE_FNO.svg" alt=""/>
+      <div class='vogue-loading-image play' ></div>
+      <img class="vogue-power-logo" src="https://funk-ar.com/event/loading_powerByFunkAR.svg" alt=""/>
+    </div>
+
+    <div id="camera-view">
+      <img id="view-size" style="opacity: 0; width: 100%;" onLoad="onLoadImage()"
+                         src="https://funk-ar.com/storage/upload/source/Img_Card_01_Mind02_coverB.png" alt='' />
+      <canvas class="camera-canvas show-view" width="600" height="600" id='WebARRocksFaceCanvas'></canvas>
+      <canvas class="camera-canvas" width="600" height="600" id='threeCanvas'></canvas>
+      <canvas id="mergeView" class='camera-canvas merge-view'></canvas>
+      <div class='take-photo' style="opacity: 1; display: none;">
+        <img class='btn-take-photo'
+             src="https://funk-ar.com/storage/image/edit-card/btn_camera_180x180.svg"
+             onClick="takePhoto()" alt=''/>
+        <img class='btn-switch-camera'
+             src="https://funk-ar.com/storage/image/btn_camera_switch_200.png"
+             onClick="onClickSwitchCamera()" alt=''/>
+      </div>
+    </div>
+    <div class="show-face">
+      <img id="swipe_icon" src="./swipe_icon.png" style="display: none;" alt=''/>
+      <img id="click_icon" src="./click_icon.png" style="display: none;" alt=''/>
+    </div>
+    
+
+    
+
+  <div class="image-preview hide">
+    <img class='image-vogue-photo' src="" alt=''/>
+    <div class='message-box'>
+        <div class='position-relative'>
+            <img class='message-box-image'
+                 src="https://funk-ar.com/storage/image/receive/tex_tryit_save_bg.png" alt=''/>
+            <div class='message'>
+                <span>確定要分享照片發炫耀文嗎？</span>
+            </div>
+            <div class='btn-know'>
+                <img class='mx-1'
+                     src="https://funk-ar.com/storage/image/edit-card/btn_P3card_L.png"
+                     onClick="onClickRetake()" alt=''/>
+                <img class='mx-1'
+                     src="https://funk-ar.com/storage/image/edit-card/btn_share2FB.png"
+                     onClick="onClickSelectPhoto()" alt=''/>
+            </div>
+        </div>
+    </div>
+  </div>
+
+  <div class="retry"style="top: 0;bottom: 0;right: 0;left: 0;position: fixed; z-index: 500; display: none;">
+    <img class="btn-retry" style="width: 75%; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;" src="./web_refresh.png" />
+  </div>
+
+  <div class="block-pc"style="top: 0;bottom: 0;right: 0;left: 0;position: fixed; z-index: 700; display: none; background-color:black;">
+    <img class="img-block-pc" style="width: 100%; max-width: 1193px; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;" src="./vogue_to_mobile.png" />
+  </div>
+
+  <div class="block-web"style="top: 0;bottom: 0;right: 0;left: 0;position: fixed; z-index: 700; display: none; background-color:black;">
+    <img class="img-block-web" style="width: 100%; max-width: 1193px; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;" src="./web_Browser.png" />
+  </div>
+
+  </body>
+</html>
+ 

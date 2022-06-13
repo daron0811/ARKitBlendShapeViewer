@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 	<head>
-		<title>three.js editor</title>
+		<title>FunkAR Online Editor</title>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
 		<link rel="apple-touch-icon" href="images/icon.png">
 		<link rel="manifest" href="manifest.json">
-		<link rel="shortcut icon" href="../files/favicon.ico" />
+		<link rel="shortcut icon" href="images/funkar_web_icon.ico" />
 	</head>
 	<body>
 		<link rel="stylesheet" href="css/main.css">
@@ -44,9 +44,9 @@
 		<script src="js/libs/tern-threejs/threejs.js"></script>
 		<script src="js/libs/signals.min.js"></script>
 		
-		<!-- <script src="../dist/WebARRocksFace.js"></script>
+		<script src="../dist/WebARRocksFace.js"></script>
 		<script src="../helpers/WebARRocksFaceThreeHelper.js"></script>
-		<script src="../helpers/WebARRocksResizer.js"></script> -->
+		<script src="../helpers/WebARRocksResizer.js"></script>
 
 		<script type="module">
 
@@ -57,7 +57,7 @@
 			import { Toolbar } from './js/Toolbar.js';
 			import { Script } from './js/Script.js';
 			import { Player } from './js/Player.js';
-			// import { ARViewport } from './js/ARViewport.js';
+			import { ARViewport } from './js/ARViewport.js';
 			import { Sidebar } from './js/Sidebar.js';
 			import { Menubar } from './js/Menubar.js';
 			import { Resizer } from './js/Resizer.js';
@@ -92,8 +92,8 @@
 			var player = new Player( editor );
 			document.body.appendChild( player.dom );
 
-			// var arviewport = new ARViewport( editor );
-			// document.body.appendChild( arviewport.dom );
+			var arviewport = new ARViewport( editor );
+			document.body.appendChild( arviewport.dom );
 
 			var sidebar = new Sidebar( editor );
 			document.body.appendChild( sidebar.dom );

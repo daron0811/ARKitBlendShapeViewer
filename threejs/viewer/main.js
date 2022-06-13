@@ -25,17 +25,19 @@ var webcamDeviceIndex = 0;
 var videoSettings= {
   // 'videoElement'           // not set by default. <video> element used
   'deviceId' :'',             // not set by default
-  'facingMode': 'user',       // to use the rear camera, set to 'environment'
-  'idealWidth': 800,  // ideal video width in pixels
-  'idealHeight': 600, // ideal video height in pixels
-  'minWidth': 480,    // min video width in pixels
-  'maxWidth': 1920,   // max video width in pixels
-  'minHeight': 480,   // min video height in pixels
-  'maxHeight': 1920,  // max video height in pixels,
-  'rotate': 0,        // rotation in degrees possible values: 0,90,-90,180
-  'flipX': false      // if we should flip horizontally the video. Default: false
+  'facingMode': 'face',       // to use the rear camera, set to 'environment' //face前鏡頭,environment後鏡頭
+  'idealWidth': 800,          // ideal video width in pixels
+  'idealHeight': 600,         // ideal video height in pixels
+  'minWidth': 480,            // min video width in pixels
+  'maxWidth': 1920,           // max video width in pixels
+  'minHeight': 480,           // min video height in pixels
+  'maxHeight': 1920,          // max video height in pixels,
+  'rotate': 0,                // rotation in degrees possible values: 0,90,-90,180
+  'flipX': false              // if we should flip horizontally the video. Default: false
 }
 
+
+var scenemodelFile = 'scene_0001_VDay01.json';
 
 //stat
 function initStats(){  
@@ -114,10 +116,14 @@ function build_scene(threeInstances) {
     scene 		      = _threeInstances.threeScene;
     camera 		      = _threeInstances.threeCamera;
 
+    _threeInstances.threeFaceFollowers[0].scale.x =-1.0;
+    _threeInstances.threeFaceFollowers[0].scale.y =1.0;
+    _threeInstances.threeFaceFollowers[0].scale.z =1.0;
+
     const threeLoadingManager = new THREE.LoadingManager();
 
     // loadSceneFromGLB();      //載入GLB
-    loadSceneFromJson('scene (37).json');        //載入Json Scene
+    loadSceneFromJson(scenemodelFile);        //載入Json Scene
 
 
     //occluder遮擋，另外在loadSceneFromJson有檢查userData.isOccluder，故先註解
@@ -131,11 +137,9 @@ function build_scene(threeInstances) {
     // );
 
 
-
-
     // add tone mapping:
-    _threeInstances.threeRenderer.toneMapping = THREE.ACESFilmicToneMapping;
     _threeInstances.threeRenderer.outputEncoding = THREE.sRGBEncoding;
+    _threeInstances.threeRenderer.toneMapping = THREE.NoToneMapping;
 
     //Note: webRock很多都會用到LoadingManager作定位或是新增物件,先預留著
     threeLoadingManager.onLoad = function ( ) {console.log( 'Loading complete!');};
@@ -166,6 +170,12 @@ function loadSceneFromJson(sceneName)
           
           _threeInstances.threeFaceFollowers[0].traverse((item) => 
           {
+            //把燈光拉到場景外，避免模型沒有燈光反射的效果
+            if(item.isLight)
+            {
+              item.parent = scene;
+            }
+
             //setOccluder
             if(item.isMesh && item.userData.isOccluder==true){
               let mat = new THREE.ShaderMaterial({
@@ -203,9 +213,6 @@ function loadSceneFromJson(sceneName)
               action.play();
             }
           }
-
-          
-          
 
           _threeInstances.threeRenderer.setAnimationLoop( animate );
           

@@ -27,11 +27,11 @@ function MenubarAdd( editor ) {
 
 	var option = new UIRow();
 	option.setClass( 'option' );
-	option.setTextContent( strings.getKey( 'menubar/add/group' ) );
+	option.setTextContent( 'Node' );
 	option.onClick( function () {
 
 		var mesh = new THREE.Group();
-		mesh.name = 'Group';
+		mesh.name = 'Node';
 
 		editor.execute( new AddObjectCommand( editor, mesh ) );
 
@@ -46,7 +46,7 @@ function MenubarAdd( editor ) {
 
 	var option = new UIRow();
 	option.setClass( 'option' );
-	option.setTextContent( 'Occluders' );
+	option.setTextContent( 'Head' );
 	option.onClick( function () {
 
 
@@ -60,22 +60,11 @@ function MenubarAdd( editor ) {
 					return;
 				}else
 				obj.name = 'occluder';
-				obj.scale.set(2.0,2.0,2.0);
-				// let mat = new THREE.ShaderMaterial({
-				// 	vertexShader: THREE.ShaderLib.basic.vertexShader,
-				// 	fragmentShader: "precision lowp float;\n void main(void){\n gl_FragColor = vec4(1.,0.,0.,1.);\n }",
-				// 	uniforms: THREE.ShaderLib.basic.uniforms,
-				// 	side: THREE.DoubleSide,
-				// 	colorWrite: false
-				//   });
-				// //   if (isDebug){
-				// // 	occluderGeometry.computeVertexNormals(); mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
-				// //   }
-				//   obj.renderOrder = -1e12; // render first
-				//   obj.material = mat;
-				//   //obj.geometry = occluderGeometry;
-				obj.userData.isOccluder = true;
+				obj.scale.set(1.7,1.7,1.7);
+				obj.position.set(0.0,0.0,20.0);
+				obj.rotation.set(10.2 * THREE.MathUtils.DEG2RAD, 0.0, 0.0);
 
+				obj.userData.isOccluder = true;
 
 				editor.execute( new AddObjectCommand( editor, obj ) );
 				});
@@ -92,147 +81,52 @@ function MenubarAdd( editor ) {
 			}
 		);
 
+	} );
+	options.add( option );
 
-		// var geometry = new THREE.BoxGeometry( 1, 1, 1, 1, 1, 1 );
-		// var mesh = new THREE.Mesh( geometry, new THREE.MeshStandardMaterial() );
-		// mesh.name = 'Head Occloud';
+	// HeadOccloud
 
-		// editor.execute( new AddObjectCommand( editor, mesh ) );
+	var option = new UIRow();
+	option.setClass( 'option' );
+	option.setTextContent( 'Head (No Nose) ' );
+	option.onClick( function () {
 
-		// var loader = new THREE.GLTFLoader();
-		// let occluderGeometry = null;
 
-		// loader.load('./assets/3D_0090_fatday_hat.glb',
-		//   function ( gltf ) {
-		// 	gltf.scene;
+		var loader = new GLTFLoader();
 
-		// 	gltf.scene.traverse(function(threeStuff){
-		// 		if (threeStuff.type !== 'Mesh'){
-		// 		  return;
-		// 		}
-		// 		if (occluderGeometry !== null && occluderGeometry !== threeStuff.geometry){
-		// 		  throw new Error('The occluder should contain only one Geometry');
-		// 		}
-		// 		occluderGeometry = threeStuff.geometry;
-		// 	  });
+		loader.load('./assets/headOccluder.glb',
+			function ( gltf ) {
+			gltf.scene.traverse(function(obj){
+				if (obj.type !== 'Mesh'){
+					console.log(obj.name);
+					return;
+				}else
+				obj.name = 'occluder';
+				obj.scale.set(15.5,15.5,15.5);
+				obj.position.set(2.3,-35.0,-40.0);
+				obj.rotation.set(72.23 * THREE.MathUtils.DEG2RAD, 0.0, 0.0);
+
+				obj.userData.isOccluder = true;
+
+				editor.execute( new AddObjectCommand( editor, obj ) );
+				});
+			},
+			// called while loading is progressing
+			function ( xhr ) {
+			console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+			},
+			// called when loading has errors
+			function ( error ) {
 		
-		// 	  let mat = new THREE.ShaderMaterial({
-		// 		vertexShader: THREE.ShaderLib.basic.vertexShader,
-		// 		fragmentShader: "precision lowp float;\n void main(void){\n gl_FragColor = vec4(1.,0.,0.,1.);\n }",
-		// 		uniforms: THREE.ShaderLib.basic.uniforms,
-		// 		side: THREE.DoubleSide,
-		// 		colorWrite: false
-		// 	  });
-		// 	  if (isDebug){
-		// 		occluderGeometry.computeVertexNormals(); mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
-		// 	  }
-		// 	  occluderMesh.renderOrder = -1e12; // render first
-		// 	  occluderMesh.material = mat;
-		// 	  occluderMesh.geometry = occluderGeometry;
-		// 	  occluderMesh.userData.isOccluder = true;
-
-
-		// 	// gltf.scene.scale.set(1500,1500,1500);
-		// 	// gltf.scene.position.set(0,100,-120);
-		// 	// _threeInstances.threeFaceFollowers[0].add(gltf.scene);
-		//   },
-		//   // called while loading is progressing
-		//   function ( xhr ) {
-		// 	console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
-		//   },
-		//   // called when loading has errors
-		//   function ( error ) {
+			console.log( 'An error happened' );
 		
-		// 	console.log( 'An error happened' );
-		
-		//   }
-		// );
-
-
-		
-		// add_occluder: function(occluder, isDebug, occluderMesh){
-		// 	if (!occluderMesh){
-		// 	  occluderMesh = new THREE.Mesh();
-		// 	}
-		// 	let occluderGeometry = null;
-		// 	if (occluder.type === 'BufferGeometry'){
-		// 	  occluderGeometry = occluder;
-		// 	} else if (occluder.scene){
-		// 	  occluder.scene.traverse(function(threeStuff){
-		// 		if (threeStuff.type !== 'Mesh'){
-		// 		  return;
-		// 		}
-		// 		if (occluderGeometry !== null && occluderGeometry !== threeStuff.geometry){
-		// 		  throw new Error('The occluder should contain only one Geometry');
-		// 		}
-		// 		occluderGeometry = threeStuff.geometry;
-		// 	  });
-		// 	} else {
-		// 	  throw new Error('Wrong occluder data format');
-		// 	}
-			
-		// 	let mat = new THREE.ShaderMaterial({
-		// 	  vertexShader: THREE.ShaderLib.basic.vertexShader,
-		// 	  fragmentShader: "precision lowp float;\n void main(void){\n gl_FragColor = vec4(1.,0.,0.,1.);\n }",
-		// 	  uniforms: THREE.ShaderLib.basic.uniforms,
-		// 	  side: THREE.DoubleSide,
-		// 	  colorWrite: false
-		// 	});
-		// 	if (isDebug){
-		// 	  occluderGeometry.computeVertexNormals(); mat = new THREE.MeshNormalMaterial({side: THREE.DoubleSide});
-		// 	}
-		// 	occluderMesh.renderOrder = -1e12; // render first
-		// 	occluderMesh.material = mat;
-		// 	occluderMesh.geometry = occluderGeometry;
-		// 	occluderMesh.userData.isOccluder = true;
-	  
-		// 	_three.faceSlots.forEach(function(faceSlot){
-		// 	  faceSlot.faceFollower.add(occluderMesh.clone());
-		// 	});
-		//   },
-	  
-	  
-		//   add_occluderFromFile: function(occluderURL, callback, threeLoadingManager, isDebug){
-		// 	const occluderMesh = new THREE.Mesh();
-		// 	const extension = occluderURL.split('.').pop().toUpperCase();
-		// 	const loader = {
-		// 	  'GLB': THREE.GLTFLoader,
-		// 	  'GLTF': THREE.GLTFLoader,
-		// 	  'JSON': THREE.BufferGeometryLoader
-		// 	}[extension];
-	  
-		// 	new loader(threeLoadingManager).load(occluderURL, function(occluder){
-		// 	  if (typeof(callback)!=='undefined' && callback) callback(occluderMesh);
-		// 	  that.add_occluder(occluder, isDebug, occluderMesh);
-		// 	});
-		// 	return occluderMesh;
-		//   },
-
-
-
-
-		// // var { DRACOLoader } = await import( '../../examples/jsm/loaders/DRACOLoader.js' );
-		// // var { GLTFLoader } = await import( '../../examples/jsm/loaders/GLTFLoader.js' );
-
-		// var dracoLoader = new DRACOLoader();
-		// dracoLoader.setDecoderPath( '../examples/js/libs/draco/gltf/' );
-
-		// var loader = new GLTFLoader();
-		// loader.setDRACOLoader( dracoLoader );
-		// loader.parse( contents, '', function ( result ) {
-
-		// 	var scene = result.scene;
-		// 	scene.name = 'HeadOccloud';
-
-		// 	scene.animations.push( ...result.animations );
-		// 	editor.execute( new AddObjectCommand( editor, scene ) );
-
-		// } );
-
-
+			}
+		);
 
 	} );
 	options.add( option );
+
+	options.add( new UIHorizontalRule() );
 
 	// Box
 
@@ -559,7 +453,7 @@ function MenubarAdd( editor ) {
 		light.name = 'DirectionalLight';
 		light.target.name = 'DirectionalLight Target';
 
-		light.position.set( 5000, 1000, 7500 );
+		light.position.set( 300	, 250, 300 );
 
 		editor.execute( new AddObjectCommand( editor, light ) );
 

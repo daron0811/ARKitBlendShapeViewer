@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="content-language" content="en-EN" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <meta name="description" content="FunkAR是世界首創WebAR擴增實境送禮平台，不論身在何處，滿滿心意都能面對面限時專送！建立專屬即時客製化AR卡片，保留不可取代的手作溫度，透過360度3D預覽，讓每個愛的時刻都更有趣。">
+    <meta name="keywords" content="AR, 擴增實境, 禮物, 互動, 卡片, 送禮, 客製化, 3D預覽, 手作卡片, AR濾鏡, AR效果, 有趣, WebAR">
+
+    <meta property="og:title" content="FunkAR｜即時客製AR卡片｜AR擴增實境送禮平台"/>
+    <meta property="og:site_name" content="FunkAR｜AR擴增實境送禮平台"/>
+    <meta property="og:description" content="FunkAR是世界首創AR擴增實境送禮平台，讓每個愛的時刻都更有趣，不論身在何處，滿滿心意都能面對面限時專送！"/>
+    <meta property="og:image" content="/storage/icon/FunkAR_share_bg.png"/>
+
+    <link rel="icon" sizes="192x192" href="/storage/icon/FunkAR Shortcut_icon_192x192_Android.png">
+    <link rel="icon" sizes="128x128" href="/storage/icon/FunkAR Shortcut_icon_128x128_Android.png">
+    <link rel="apple-touch-icon" href="/storage/icon/FunkAR Shortcut_icon 60x60_iPhone.png" />
+    <link rel="apple-touch-icon" sizes="76x76" href="/storage/icon/FunkAR Shortcut_icon_76x76_iPad.png" />
+    <link rel="apple-touch-icon" sizes="120x120" href="/storage/icon/FunkAR Shortcut_icon_120x120_iPhone.png" />
+    <link rel="apple-touch-icon" sizes="152x152" href="/storage/icon/FunkAR Shortcut_icon_152x152_iPad.png" />
+
+    <title>FunkAR</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    
+    <script src="./libs/three/v131/three.js"></script>
+    <script src="./libs/three/v131/three.min.js"></script>
+    <script src="./libs/three/v131/GLTFLoader.js"></script>
+
+    <script src="./libs/dat.gui/stats.min.js"></script>
+
+    <!-- INCLUDE WebAR.rocks.face MAIN SCRIPT -->
+    <script src="./dist/WebARRocksFace.js"></script>
+
+    <!-- INCLUDE MAIN HELPER -->
+    <script src="./helpers/WebARRocksFaceThreeHelperVOGUE.js"></script>
+
+    <!-- INCLUDE RESIZER HELPER -->
+    <script src="./helpers/WebARRocksResizer.js"></script>
+
+    <!-- INCLUDE DEMO SCRIPT -->
+    <script src="./main.js"></script>
+
+
+    
+    <style type="text/css">
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      #WebARRocksFaceCanvas, #threeCanvas {
+        position: fixed;
+        width  : 100vw;
+        /* height : 70vh; */
+        top: 0;
+        left: 0;
+        /* mirror the canvas: */
+        /* transform: rotateY(0deg); */
+        transform: rotateY(180deg);
+      }
+      #WebARRocksFaceCanvas {
+        z-index: 0;
+      }
+      #threeCanvas {
+        z-index: 1;
+      }
+    </style>
+
+
+  </head>
+  <body onload="main()">
+    <!-- canvas where the earring will be displayed: -->
+    <canvas width="600" height="600" id='threeCanvas'></canvas>
+
+    <!-- canvas where the video will be displayed: -->
+    <canvas width="600" height="600" id='WebARRocksFaceCanvas'></canvas>
+      
+    <div class="loading"style="top: 0;bottom: 0;right: 0;left: 0;position: fixed; z-index: 100; background-color:black;">
+      <img class="img-loading" style="width: 100%; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;" src="./BoardingGate_loading.png" />
+    </div>
+
+    <div class="btn-video"style="top: 0;bottom: 0;right: 0;left: 0;position: fixed; z-index: 100; display: none;">
+      <img class="btn-video-link" style="width: 55%; top: 60%; left: 50%; transform: translate(-50%, -50%); position: absolute;" src="./BoardingGate_login_1.png" />
+    </div>
+
+    <div class="retry"style="top: 0;bottom: 0;right: 0;left: 0;position: fixed; z-index: 500; display: none;">
+      <img class="btn-retry" style="width: 75%; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;" src="./web_refresh.png" />
+    </div>
+
+    <div class="block-pc"style="top: 0;bottom: 0;right: 0;left: 0;position: fixed; z-index: 700; display: none; background-color:black;">
+      <img class="img-block-pc" style="width: 100%; max-width: 1193px; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;" src="./to_mobile.png" />
+    </div>
+
+    <div class="block-web"style="top: 0;bottom: 0;right: 0;left: 0;position: fixed; z-index: 700; display: none; background-color:black;">
+      <img class="img-block-web" style="width: 100%; max-width: 1193px; top: 50%; left: 50%; transform: translate(-50%, -50%); position: absolute;" src="./web_Browser.png" />
+    </div>
+
+  </body>
+</html>
+ 

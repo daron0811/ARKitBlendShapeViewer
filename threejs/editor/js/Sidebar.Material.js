@@ -515,18 +515,18 @@ const vertexShaderVariables = [
 ].join( '\n' );
 
 const meshMaterialOptions = {
-	'MeshBasicMaterial': 'MeshBasicMaterial',
-	'MeshDepthMaterial': 'MeshDepthMaterial',
-	'MeshNormalMaterial': 'MeshNormalMaterial',
-	'MeshLambertMaterial': 'MeshLambertMaterial',
-	'MeshMatcapMaterial': 'MeshMatcapMaterial',
-	'MeshPhongMaterial': 'MeshPhongMaterial',
-	'MeshToonMaterial': 'MeshToonMaterial',
-	'MeshStandardMaterial': 'MeshStandardMaterial',
-	'MeshPhysicalMaterial': 'MeshPhysicalMaterial',
-	'RawShaderMaterial': 'RawShaderMaterial',
-	'ShaderMaterial': 'ShaderMaterial',
-	'ShadowMaterial': 'ShadowMaterial'
+	'MeshBasicMaterial': 'Basic',
+	'MeshDepthMaterial': ' Depth',
+	'MeshNormalMaterial': ' Normal',
+	'MeshLambertMaterial': ' Lambert',
+	'MeshMatcapMaterial': ' Matcap',
+	'MeshPhongMaterial': ' Phong',
+	'MeshToonMaterial': ' Toon',
+	'MeshStandardMaterial': ' Standard',
+	'MeshPhysicalMaterial': ' Physical',
+	'RawShaderMaterial': 'Raw Shader',
+	'ShaderMaterial': 'Shader Material',
+	'ShadowMaterial': 'Shadow Material'
 };
 
 const lineMaterialOptions = {

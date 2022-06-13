@@ -39,7 +39,6 @@ function SidebarScene( editor ) {
 			}
 
 			opener.addEventListener( 'click', function () {
-
 				nodeStates.set( object, nodeStates.get( object ) === false ); // toggle
 				refreshUI();
 
@@ -98,6 +97,8 @@ function SidebarScene( editor ) {
 	}
 
 	function buildHTML( object ) {
+
+		// console.log(object.name);
 
 		var html = `<span class="type ${ getObjectType( object ) }"></span> ${ escapeHTML( object.name ) }`;
 

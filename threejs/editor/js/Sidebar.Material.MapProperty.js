@@ -1,6 +1,6 @@
 import * as THREE from '../../build/three.module.js';
 
-import { UICheckbox, UINumber, UIRow, UIText } from './libs/ui.js';
+import { UISelect,UICheckbox, UINumber, UIRow, UIText } from './libs/ui.js';
 import { UITexture } from './libs/ui.three.js';
 import { SetMaterialMapCommand } from './commands/SetMaterialMapCommand.js';
 import { SetMaterialValueCommand } from './commands/SetMaterialValueCommand.js';
@@ -10,6 +10,12 @@ function SidebarMaterialMapProperty( editor, property, name ) {
 
 	const signals = editor.signals;
 
+	var options = {};
+	// 	en: 'English',
+	// 	fr: 'Français',
+	// 	zh: '中文'
+	// };
+
 	const container = new UIRow();
 	container.add( new UIText( name ).setWidth( '90px' ) );
 
@@ -18,6 +24,23 @@ function SidebarMaterialMapProperty( editor, property, name ) {
 
 	const map = new UITexture().onChange( onMapChange );
 	container.add( map );
+
+
+	
+	// const maplist = new UITexture().onChange( onMapChange );
+	// container.add( maplist );
+
+	SetOptionValue();
+
+	// var language = new UISelect().setWidth( '50px' );
+	// language.setOptions( options );
+	// language.onChange(()=>{
+	// 	console.log(editor.scene.toJSON().textures);
+	// })
+
+	// language.onChange(OnChangeOption);
+	// container.add( language );
+
 
 	const mapType = property.replace( 'Map', '' );
 
@@ -79,12 +102,11 @@ function SidebarMaterialMapProperty( editor, property, name ) {
 		if ( texture !== null ) {
 
 			if ( texture.isDataTexture !== true && texture.encoding !== THREE.sRGBEncoding ) {
-
 				texture.encoding = THREE.sRGBEncoding;
 				material.needsUpdate = true;
-
 			}
-
+			// options
+			console.log(options);
 		}
 
 		enabled.setDisabled( false );
@@ -172,6 +194,21 @@ function SidebarMaterialMapProperty( editor, property, name ) {
 
 	}
 
+	function OnChangeOption()
+	{
+		var value = this.getValue();
+		onMapChange(value);
+		SetOptionValue();
+	}
+
+	function SetOptionValue()
+	{
+		var textures = editor.scene.toJSON().textures;
+		for(var texture in textures)
+		{
+			options[texture.name] = texture;
+		}
+	}
 	//
 
 	signals.objectSelected.add( function ( selected ) {

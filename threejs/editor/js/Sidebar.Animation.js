@@ -7,25 +7,36 @@ function SidebarAnimation( editor ) {
 	var mixer = editor.mixer;
 
 	var actions = {};
+	var selectAnimNames;
+	var options;
 
 	signals.objectSelected.add( function ( object ) {
-
 		if ( object !== null && object.animations.length > 0 ) {
 
 			var animations = object.animations;
 
 			container.setDisplay( '' );
 
-			var options = {};
+			selectAnimNames = {};
+
+			options = {};
 			var firstAnimation;
 
 			for ( var animation of animations ) {
 
 				if ( firstAnimation === undefined ) firstAnimation = animation.name;
 
-				actions[ animation.name ] = mixer.clipAction( animation, object );
+				var mixerAC = mixer.clipAction( animation, object );
+
+				actions[ animation.name ] = mixerAC;
+				
 				options[ animation.name ] = animation.name;
 
+				selectAnimNames[animation.name] = mixerAC;
+				if(mixerAC.isRunning () )
+				{
+					options[ animation.name ] = '▸ '+animation.name;
+				}
 			}
 
 			animationsSelect.setOptions( options );
@@ -53,7 +64,8 @@ function SidebarAnimation( editor ) {
 	function playAction() {
 
 		actions[ animationsSelect.getValue() ].play();
-
+		
+		UpdateOption();
 	}
 
 	function stopAction() {
@@ -61,13 +73,103 @@ function SidebarAnimation( editor ) {
 		actions[ animationsSelect.getValue() ].stop();
 
 		signals.animationStopped.dispatch();
+		
+		UpdateOption();
+	}
 
+	function PlayAllAction() {
+
+		for (var clipName in selectAnimNames) {
+			actions[ clipName ].reset().play();
+		}
+		
+		UpdateOption();
+	}
+
+	function PlaySceneAction() {
+
+		// console.log(editor.scene);
+		editor.scene.traverse((item) => 
+		{
+			if( (item.animations != null) && (item.animations.length != 0))
+			{
+				var animations = item.animations;
+
+				for ( var animation of animations ) {
+
+					if(actions[animation.name] == null)
+					{
+						var mixerAC = mixer.clipAction( animation, item );
+						actions[ animation.name ] = mixerAC;
+					}
+
+				}
+			}
+		});
+
+		for (var clipName in actions) {
+			actions[ clipName ].reset().play();
+		}
+		
+		UpdateOption();
+	}
+
+	function StopSceneAction() {
+
+		editor.scene.traverse((item) => 
+		{
+			if( (item.animations != null) && (item.animations.length != 0))
+			{
+				var animations = item.animations;
+
+				for ( var animation of animations ) {
+
+					if(actions[animation.name] == null)
+					{
+						var mixerAC = mixer.clipAction( animation, item );
+						actions[ animation.name ] = mixerAC;
+					}
+				}
+			}
+		});
+
+		for (var clipName in actions) {
+			actions[ clipName ].stop();
+		}
+		
+		UpdateOption();
+	}
+
+	function StopAllAction() {
+
+		for (var clipName in selectAnimNames) {
+			actions[ clipName ].stop();
+		}
+		UpdateOption();
 	}
 
 	function changeTimeScale() {
 
 		mixer.timeScale = mixerTimeScaleNumber.getValue();
 
+	}
+
+	function UpdateOption()
+	{
+		for (var option in options) {
+		   var clipName = actions[ option ]._clip.name;
+
+		   if(actions[ option ].isRunning ())
+		   {
+				options[clipName] = '▸ '+clipName;
+		   }else
+		   {
+				options[clipName] = clipName;
+		   }
+
+		}
+
+		animationsSelect.setOptions( options );
 	}
 
 	var container = new UIPanel();
@@ -77,15 +179,17 @@ function SidebarAnimation( editor ) {
 	container.add( new UIBreak() );
 	container.add( new UIBreak() );
 
-	//
 
 	var animationsRow = new UIRow();
 
 	var animationsSelect = new UISelect().setFontSize( '12px' );
-	animationsRow.add( animationsSelect );
+	animationsRow.add( animationsSelect ).onChange(()=>{UpdateOption});
 	animationsRow.add( new UIButton( strings.getKey( 'sidebar/animations/play' ) ).setMarginLeft( '4px' ).onClick( playAction ) );
 	animationsRow.add( new UIButton( strings.getKey( 'sidebar/animations/stop' ) ).setMarginLeft( '4px' ).onClick( stopAction ) );
-
+	animationsRow.add( new UIButton( 'Play All' ).setMarginLeft( '4px' ).onClick( PlayAllAction ) );
+	animationsRow.add( new UIButton( 'Stop All' ).setMarginLeft( '4px' ).onClick( StopAllAction ) );
+	animationsRow.add( new UIButton( 'Play Scene' ).setMarginLeft( '4px' ).onClick( PlaySceneAction ) );
+	animationsRow.add( new UIButton( 'Stop Scene' ).setMarginLeft( '4px' ).onClick( StopSceneAction ) );
 	container.add( animationsRow );
 
 	//

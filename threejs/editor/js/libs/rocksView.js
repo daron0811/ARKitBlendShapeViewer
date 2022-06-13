@@ -8,6 +8,8 @@ var RocksView = {
 		var camera;
 		this.loader; //Three Loader 看依載入的類型
 		var models; //載入的模型
+		
+		var detectStateInfo;
 
 		var renderer;
 		var _threeInstances;
@@ -36,7 +38,6 @@ var RocksView = {
 
 		canvasThree.style.zIndex  = "2";
 		canvasThree.style.position= "fixed";
-		//canvasThree.style.width= "100vw";
 		canvasThree.style.top = "35";
 		canvasThree.style.left = "0";
 		canvasThree.style.transform = "rotateY(180deg)";
@@ -57,7 +58,6 @@ var RocksView = {
 		//animation
 		var mixer;
 		var animationClips;
-		var morphClips;
 		
 		var that = this;
 
@@ -77,73 +77,25 @@ var RocksView = {
 
 		this.load = function ( json ) {
 
+			//console.log(json);
 			InitwebCam(json);
-
-			// events = {
-			// 	init: [],
-			// 	start: [],
-			// 	stop: [],
-			// 	keydown: [],
-			// 	keyup: [],
-			// 	pointerdown: [],
-			// 	pointerup: [],
-			// 	pointermove: [],
-			// 	update: []
-			// };
-
-			// var scriptWrapParams = 'player,renderer,scene,camera';
-			// var scriptWrapResultObj = {};
-
-			// for ( var eventKey in events ) {
-
-			// 	scriptWrapParams += ',' + eventKey;
-			// 	scriptWrapResultObj[ eventKey ] = eventKey;
-
-			// }
-
-			// var scriptWrapResult = JSON.stringify( scriptWrapResultObj ).replace( /\"/g, '' );
-
-			// for ( var uuid in json.scripts ) {
-
-			// 	var object = scene.getObjectByProperty( 'uuid', uuid, true );
-
-			// 	if ( object === undefined ) {
-
-			// 		console.warn( 'APP.Player: Script without object.', uuid );
-			// 		continue;
-
-			// 	}
-
-			// 	var scripts = json.scripts[ uuid ];
-
-			// 	for ( var i = 0; i < scripts.length; i ++ ) {
-
-			// 		var script = scripts[ i ];
-
-			// 		var functions = ( new Function( scriptWrapParams, script.source + '\nreturn ' + scriptWrapResult + ';' ).bind( object ) )( this, renderer, scene, camera );
-
-			// 		for ( var name in functions ) {
-
-			// 			if ( functions[ name ] === undefined ) continue;
-
-			// 			if ( events[ name ] === undefined ) {
-
-			// 				console.warn( 'APP.Player: Event type not supported (', name, ')' );
-			// 				continue;
-
-			// 			}
-
-			// 			events[ name ].push( functions[ name ].bind( object ) );
-
-			// 		}
-
-			// 	}
-
-			// }
-
-			// dispatch( events.init, arguments );
-
 		};
+
+		this.isDetected = function ()
+		{
+			return detectStateInfo.isDetected;
+		};
+
+		this.faceRotation = function ()
+		{
+			return {'x':detectStateInfo.rx,'y':detectStateInfo.ry,'z':detectStateInfo.rz};
+		};
+
+		this.facePosition= function ()
+		{
+			return {'x':detectStateInfo.x,'y':detectStateInfo.y};
+		};
+
 
 				//for test
 		document.addEventListener('keyup', function(event) {
@@ -184,7 +136,7 @@ var RocksView = {
 				
 				//update() : detectState 偵測資訊 有無偵測 LandMark位置(2D的) 
 				callbackTrack: function (detectState) {
-				//   console.log("detectState");
+					detectStateInfo = detectState;
 				},
 			
 				callbackReady: function (err, threeInstances) {
@@ -200,6 +152,13 @@ var RocksView = {
 					renderer 	= _threeInstances.threeRenderer;
 					scene 		= _threeInstances.threeScene;
 					camera 		= _threeInstances.threeCamera;
+
+					
+					_threeInstances.threeFaceFollowers[0].scale.x =-1.0;
+					
+					_threeInstances.threeFaceFollowers[0].scale.y =1.0;
+					
+					_threeInstances.threeFaceFollowers[0].scale.z =1.0;
 
 					SetWebGLRenderer(value.project);
 					SetObjectFromScene(value.scene);
@@ -221,6 +180,8 @@ var RocksView = {
 			if ( project.toneMapping !== undefined ) renderer.toneMapping = project.toneMapping;
 			if ( project.toneMappingExposure !== undefined ) renderer.toneMappingExposure = project.toneMappingExposure;
 			if ( project.physicallyCorrectLights !== undefined ) renderer.physicallyCorrectLights = project.physicallyCorrectLights;
+
+			renderer.outputEncoding = THREE.sRGBEncoding;
 		}
 
 		function SetObjectFromScene(value)
@@ -240,6 +201,12 @@ var RocksView = {
 
 
 			_threeInstances.threeFaceFollowers[0].traverse((item) => {
+
+				if(item.isLight)
+				{
+					item.parent = scene;
+				}
+
 				if(item.isMesh && item.userData.isOccluder==true){
 					let mat = new THREE.ShaderMaterial({
 						vertexShader: THREE.ShaderLib.basic.vertexShader,
@@ -257,6 +224,8 @@ var RocksView = {
 					// animationClips.push(item.animations[0]);
 					for(var i = 0 ; i<item.animations.length;i++)
 					{
+						console.log(item.name);
+						console.log(i,item.animations[i].name);
 						animationClips.push(item.animations[i]);
 					}
 				}
@@ -270,7 +239,7 @@ var RocksView = {
 			  });
 
 			mixer.addEventListener('loop', (x) => {
-			//ReplayAnimation();
+				//ReplayAnimation();
 				// console.log("loop",x);
 			});
 
@@ -365,7 +334,6 @@ var RocksView = {
 		const clock = new THREE.Clock();
 
 		function animate() {
-			//console.log('animate');
 
 			time = performance.now();
 			
@@ -381,8 +349,8 @@ var RocksView = {
 
 			renderer.render(_threeInstances.threeScene, _threeInstances.threeCamera );
 			prevTime = time;
-			// console.log(mixer);
 			const delta = clock.getDelta();
+
 			if(mixer!=null)
 			{
 				// mixer.update( delta );
@@ -398,6 +366,7 @@ var RocksView = {
 		}
 
 
+
 		this.setCamera = function ( value ) {
 
 			camera = value;
@@ -407,7 +376,6 @@ var RocksView = {
 		};
 
 		this.setScene = function ( value ) {
-			
 			_threeInstances.threeFaceFollowers[0].add(value);
 
 			// console.log(value);
